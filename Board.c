@@ -34,11 +34,42 @@ void initializeBoard(Board board){
 /**
  * Creates and returns a new board object.
  * If Board object can't be created by some reason, NULL will be returned.
+ * 
+ * @return new Board object.
  */
 Board newBoard(){
     Board board = (Board)malloc(sizeof(struct Board));
     if(board != NULL) initializeBoard(board);
     return board;
+}
+
+/**
+ * Puts the given symbol on the board's table according to the
+ * given coordinates (indexed at 1).
+ * 
+ * @param board board.
+ * @param symbol char to put on the board.
+ * @param row row coordinate.
+ * @param column column coordinate.
+ */
+void putOnBoard(Board board, char symbol, int row, int column){
+    if (row <= 0 || row > ROW_SIZE || column <= 0 || column > COLUMN_SIZE){
+        printf("Invalid coordinates: (%d, %d)!\n", row, column);
+        return;
+    }
+    getTable(board)[row-1][column-1] = symbol;
+}
+
+/**
+ * Removes the symbol at the coordinates (row, column) from the
+ * given board.
+ * 
+ * @param board board.
+ * @param row row coordinate.
+ * @param column column coordinate.
+ */
+void removeFromBoard(Board board, int row, int column){
+    putOnBoard(board, '.', row, column);   
 }
 
 /**
@@ -51,7 +82,6 @@ void destroyBoard(Board board){
         free(board);
     }
 }
-
 
 /**
  * Returns the board's table.

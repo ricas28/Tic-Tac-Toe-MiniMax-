@@ -10,6 +10,8 @@ typedef struct Board *Board;
 
 Board newBoard();
 void destroyBoard(Board board);
+void putOnBoard(Board board, char symbol, int row, int column);
+void removeFromBoard(Board board, int row, int column);
 char (*getTable(Board board))[COLUMN_SIZE];
 void printTable(Board board);
 

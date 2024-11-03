@@ -4,6 +4,7 @@ Implementation of the classic game (Tic-Tac-Toe) using the MiniMax algorithm to 
 ## Content Board
 - [Description](#description)
 - [Installing](#installing)
+- [Running](#running)
 
 ## Description
 Tic-Tac-Toe is a board game for two players, where each of the players tries to align three symbols on a line ('X' for player one and 'O' for player two). This implementation uses the MiniMax Algorithm to make the computer only make the most optimized plays, making it a challenging opponent.
@@ -11,5 +12,11 @@ Tic-Tac-Toe is a board game for two players, where each of the players tries to 
 ## Installing
 1. Clone the repository:
     git clone git@github.com:ricas28/Tic-Tac-Toe-MiniMax-.git
+
+## Running
+1. Compile:
+    gcc Board.c Menu.c Tic-Tac-Toe.c main.c -o main
+2. Run:
+    ./main
 
 

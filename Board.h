@@ -15,7 +15,9 @@ Board newBoard();
 void destroyBoard(Board board);
 void putOnBoard(Board board, char symbol, int row, int column);
 void removeFromBoard(Board board, int row, int column);
+int getEmptySpaces(Board board);
 char (*getTable(Board board))[COLUMN_SIZE];
+char getSymbol(Board board, int row, int col);
 void printTable(Board board);
 
 #endif

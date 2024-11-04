@@ -1,13 +1,9 @@
 /**
- * Program to represent a Tic-Tac-Toe board.
+ * Program to represent a  board object.
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include "Board.h"
-
-/** Constants for players. */
-#define PLAYER_1 'X'
-#define PLAYER_2 'O'
 
 /** Board stucture. */
 struct Board{
@@ -73,6 +69,24 @@ void removeFromBoard(Board board, int row, int column){
 }
 
 /**
+ * Returns the number of empty spaces on a board.
+ * 
+ * @param board board.
+ * @return number of empty spaces on a board.
+ */
+int getEmptySpaces(Board board){
+    int emptySpaces = 0;
+
+    for(int i = 0; i < ROW_SIZE; i++){
+        for(int j = 0; j < COLUMN_SIZE; j++){
+            if(getSymbol(board, i, j) == '.')
+                emptySpaces++;
+        }
+    }
+    return emptySpaces;
+}
+
+/**
  * Destroys the given Board object.
  * 
  * @param board Board object.
@@ -91,6 +105,18 @@ void destroyBoard(Board board){
  */
 char (*getTable(Board board))[COLUMN_SIZE]{
     return board->table;
+}
+
+/**
+ * Returns the symbol at the given coordinates (indexed at 0).
+ * 
+ * @param board board.
+ * @param row row coordinate.
+ * @param col col coordinate.
+ * @return symbol at the coordinates (row, col).
+ */
+char getSymbol(Board board, int row, int col){
+    return getTable(board)[row][col];
 }
 
 /**

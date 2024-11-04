@@ -24,11 +24,13 @@ void showGameMenu(){
 /**
  * Checks if the given option is valid.
  * 
- * @param option option being analised.
+ * @param option option being analysed.
+ * @param minVal min value the option can be.
+ * @param mmaxVal max value the option can be.
  * @return True if it's a valid option and False otherwise.
  */
-int isValidOption(char* option){
-    return strlen(option) == 1 && *option >= '1' && *option <= '4';
+int isValidOption(char* option, char minVal, char maxVal){
+    return strlen(option) == 1 && *option >= minVal && *option <= maxVal;
 }
 
 void lstrip(char* str) {
@@ -98,20 +100,23 @@ void freeOption(char *option){
 }
 
 /**
- * Requests the user for a option (int).
+ * Requests the user for an option between a min value and a max value. 
  * Option then needs to be freed with freeOption function.
  * 
+ * @param text text for the prompt.
+ * @param minVal min value the option can be.
+ * @param maxVal max value the option can be.
  * @return option the user typed.
  */
-char *requestOption(){
+char *requestOption(char *text, char minVal, char maxVal){
     char *option;
 
-    printf("Type a menu option: ");
+    printf("%s", text);
     option = readOption();
 
-    while(!isValidOption(option)){
-        printf("Invalid menu option: \"%s\"!\n", option);
-        printf("Type a menu option: ");
+    while(!isValidOption(option, minVal, maxVal)){
+        printf("Invalid option: \"%s\"!\n", option);
+        printf("%s", text);
         /** We need to get rid of old option. */
         freeOption(option);
         option = readOption();

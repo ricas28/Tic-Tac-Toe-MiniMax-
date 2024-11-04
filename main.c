@@ -1,11 +1,7 @@
 #include <stdio.h>
-#include "Board.h"
+#include "Tic-Tac-Toe.h"
 
 int main(void){
-    Board board = newBoard();
-    /** Check if creation of board was successfull. */
-    if(board == NULL) return -1;
-    printTable(board);
-    destroyBoard(board);
+    initializeGame();
     return 0;
 }

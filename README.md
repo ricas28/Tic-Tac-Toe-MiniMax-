@@ -1,7 +1,7 @@
 # **MiniMax algorithm on Tic-Tac-Toe**
 Implementation of the classic game (Tic-Tac-Toe) using the MiniMax algorithm to optimize plays made by the computer.
 
-## **Content Board**
+## **Content Table**
 - [Description](#description)
 - [Features](#features)
 - [Running The Project](#running-the-project)

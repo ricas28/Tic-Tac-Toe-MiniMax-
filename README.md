@@ -12,10 +12,12 @@ Tic-Tac-Toe is a board game for two players, where each of the players tries to 
 ## Installing
 1. Clone the repository:
     git clone git@github.com:ricas28/Tic-Tac-Toe-MiniMax-.git
+2. Change directory:
+    cd Tic-Tac-Toe-MiniMax-/
 
 ## Running
 1. Compile:
-    gcc -o  main Board.c Menu.c Tic-Tac-Toe.c MiniMax.c main.c -lm
+    gcc -o main Board.c Menu.c Tic-Tac-Toe.c MiniMax.c main.c -lm
 2. Run:
     ./main
 

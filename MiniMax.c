@@ -10,9 +10,11 @@
  * 
  * @param board current board.
  * @param isMax "bool" that determines if player is maximizing score or not.
+ * @param alpha 
+ * @param beta
  * @return score that a finished game has.
  */
-double miniMax(Board board, int isMax){
+double miniMax(Board board, int isMax, double alpha, double beta){
     int emptySpaces = getEmptySpaces(board), winner = findWinner(board);
     double score, newScore;
 
@@ -28,14 +30,22 @@ double miniMax(Board board, int isMax){
         for(int j = 1; j <= COLUMN_SIZE; j++){
             /** Check if play can be made. */
             if(!isPlayerSymbol(getSymbol(board, i-1, j-1))){
+                /** Test a new play. */
                 putOnBoard(board, isMax ? PLAYER_1 : PLAYER_2, i, j);
-                newScore = miniMax(board, !isMax);
-                if ((isMax && newScore > score) || 
-                    (!isMax && newScore < score)){
-                        score = newScore;
+                /** Recursevily call miniMax to see play score.. */
+                newScore = miniMax(board, !isMax, alpha, beta);
+                /** Update score/alpha/beta. */
+                if(isMax) {
+                    score = fmax(score, newScore);
+                    alpha = fmax(alpha, score);
+                } else {
+                    score = fmin(score, newScore);
+                    beta = fmin(beta, score);
                 }
                 /** Remove play from the board. */
                 removeFromBoard(board, i, j);
+                /** Condition to stop looking for plays. */
+                if(alpha >= beta) return score;
             }
         }
     }

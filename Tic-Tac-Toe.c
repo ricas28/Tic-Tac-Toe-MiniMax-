@@ -181,21 +181,26 @@ void makeRandomPlay(int play[]){
  */
 void findBestMove(Board board, int isMax, int play[]){
     int bestRow, bestCol;
-    double score, newScore;
+    double score, newScore, alpha, beta;
 
     score = isMax ? -INFINITY : INFINITY;
+    alpha = -INFINITY;
+    beta = INFINITY;
+
     for(int i = 1; i <= ROW_SIZE; i++){
         for(int j = 1; j <= COLUMN_SIZE; j++){
             /** Check if play can be made. */
             if(!isPlayerSymbol(getSymbol(board, i-1, j-1))){
                 putOnBoard(board, isMax ? PLAYER_1 : PLAYER_2, i, j);
-                newScore = miniMax(board, !isMax);
+                newScore = miniMax(board, !isMax, alpha, beta);
                 if ((isMax && newScore > score) || 
                     (!isMax && newScore < score)){
                         score = newScore;
                         bestRow = i;
                         bestCol = j;
                 }
+                if(isMax && newScore > alpha) alpha = newScore;
+                else if(!isMax && newScore < beta) beta = newScore;
                 /** Remove play for backtracking. */
                 removeFromBoard(board, i, j);
             }

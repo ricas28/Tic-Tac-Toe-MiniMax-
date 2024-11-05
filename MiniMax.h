@@ -6,6 +6,6 @@
 
 #include "Board.h"
 
-double miniMax(Board board, int isMax);
+double miniMax(Board board, int isMax, double alpha, double beta);
 
 #endif

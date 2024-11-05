@@ -15,7 +15,7 @@ Tic-Tac-Toe is a board game for two players, where each of the players tries to 
 
 ## Running
 1. Compile:
-    gcc -o main Board.c Menu.c Tic-Tac-Toe.c MiniMax.c main.c
+    gcc -o  main Board.c Menu.c Tic-Tac-Toe.c MiniMax.c main.c -lm
 2. Run:
     ./main
 

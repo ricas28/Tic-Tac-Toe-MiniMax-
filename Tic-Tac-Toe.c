@@ -3,16 +3,13 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include <unistd.h>
 #include "Menu.h"
 #include "Board.h"
-
-/** Constants for logic implementations. */
-#define TRUE 1
-#define FALSE 0
-
-/** Constants for players. */
-#define PLAYER_1 'X'
-#define PLAYER_2 'O'
+#include "Tic-Tac-Toe.h"
+#include "MiniMax.h"
 
 /**
  * Checks if the given symbol is a player symbol.
@@ -30,15 +27,15 @@ int isPlayerSymbol(char symbol){
  * @param board board.
  * @return TRUE if a win condition was found and FALSE otherwise.
  */
-int checkRows(Board board){
+char checkRows(Board board){
     for(int i = 0; i < ROW_SIZE; i++){
         if(isPlayerSymbol(getSymbol(board, i, 0)) &&
             getSymbol(board, i, 0) == getSymbol(board, i, 1) && 
             getSymbol(board, i, 0) == getSymbol(board, i, 2)){
-                return TRUE;
+                return getSymbol(board, i, 0);
         }
     }
-    return FALSE;
+    return EMPTY;
 }
 
 /**
@@ -47,48 +44,61 @@ int checkRows(Board board){
  * @param board board.
  * @return TRUE if a win condition was found and FALSE otherwise.
  */
-int checkColumns(Board board){
+char checkColumns(Board board){
     for(int i = 0; i < COLUMN_SIZE; i++){
         if(isPlayerSymbol(getSymbol(board, 0, i)) &&
             getSymbol(board, 0, i) == getSymbol(board, 1, i) && 
             getSymbol(board, 0, i) == getSymbol(board, 2, i) ){
-                return TRUE;
+                return getSymbol(board, 0, i);
         }
     }
-    return FALSE;
+    return EMPTY;
 }
 
 /**
  * Checks if the any of the diagonls on a board has a win condition.
  * 
  * @param board board.
- * @return TRUE if a win condition was found and FALSE otherwise.
+ * @return player symbol if a win condition was found and EMPTY otherwise.
  */
-int checkDiagonals(Board board){
+char checkDiagonals(Board board){
     /** Check Positive diagonal. */
     if (isPlayerSymbol(getSymbol(board, 0, 0)) && 
         getSymbol(board, 0, 0) == getSymbol(board, 1, 1) && 
         getSymbol(board, 0, 0) == getSymbol(board, 2, 2)){
-            return TRUE;
+            return getSymbol(board, 0, 0);
     }
 
     /** Check negative diagonal. */
     else if (isPlayerSymbol(getSymbol(board, 0, 2)) &&
         getSymbol(board, 0, 2) == getSymbol(board, 1, 1) && 
         getSymbol(board, 0, 2) == getSymbol(board, 2, 0)){
-            return TRUE;
+            return getSymbol(board, 0, 2);
     }
-    return FALSE;
+    return EMPTY;
 }
 
 /**
 * Checks if the game is over on a given board.
 * 
 * @param board board.
-* @return TRUE if a win condition was found and FALSE otherwise.
+* @return winner symbol if a win condition was found and EMPTY otherwise.
 */
-int isGameOver(Board board){
-    return checkRows(board) || checkColumns(board) || checkDiagonals(board);
+char findWinner(Board board){
+    char winner, rows, cols, diagonals;
+
+    rows = checkRows(board);
+    cols = checkColumns(board);
+    diagonals = checkDiagonals(board);
+
+    if (rows != EMPTY)
+        return rows;
+    if(cols != EMPTY)
+        return cols;
+    if(diagonals != EMPTY)
+        return diagonals;
+        
+    return EMPTY;
 }   
 
 /**
@@ -129,6 +139,74 @@ void switchPlayers(int *player1, int *player2){
 }
 
 /**
+ * Generates a new random number between minNum and maxNum.
+ * 
+ * @param minNum min number.
+ * @param maxNum max number.
+ * @return new number between minNum and maxNum.
+ */
+int generateNewRandom(int minNum, int maxNum){
+    int result = 0, lowNum = 0, hiNum = 0;
+ 
+    if (minNum < maxNum)  {
+        lowNum = minNum;
+        hiNum = maxNum + 1;
+    } 
+    else {
+        lowNum = maxNum + 1;
+        hiNum = minNum;
+    }
+    
+    srand(time(NULL));
+    result = (rand() % (hiNum - lowNum)) + lowNum;
+    return result;
+}
+
+/**
+ * Makes a random play.
+ * 
+ * @param play array that will store the play.
+ */
+void makeRandomPlay(int play[]){
+    play[0] = generateNewRandom(1, 3);
+    play[1] = generateNewRandom(1, 3);
+}
+
+/**
+ * Finds the best move on the current board using a miniMax algorithm.
+ * 
+ * @param board current board.
+ * @param isMax "bool" to decide if player is maximizing or not.
+ * @param play array to store the best play.
+ */
+void findBestMove(Board board, int isMax, int play[]){
+    int bestRow, bestCol;
+    double score, newScore;
+
+    score = isMax ? -INFINITY : INFINITY;
+    for(int i = 1; i <= ROW_SIZE; i++){
+        for(int j = 1; j <= COLUMN_SIZE; j++){
+            /** Check if play can be made. */
+            if(!isPlayerSymbol(getSymbol(board, i-1, j-1))){
+                putOnBoard(board, isMax ? PLAYER_1 : PLAYER_2, i, j);
+                newScore = miniMax(board, !isMax);
+                if ((isMax && newScore > score) || 
+                    (!isMax && newScore < score)){
+                        score = newScore;
+                        bestRow = i;
+                        bestCol = j;
+                }
+                /** Remove play for backtracking. */
+                removeFromBoard(board, i, j);
+            }
+        }
+    }
+    /** Store the best play. */
+    play[0] = bestRow;
+    play[1] = bestCol;
+}
+
+/**
  * Makes the main loop for a new game.
  * 
  * @param PVP int for PvP games.
@@ -137,12 +215,13 @@ void switchPlayers(int *player1, int *player2){
  */
 void playGame(int PvP, int PvC, int CvC){
     /** Player1 ('X') is always the first to play. */
-    int player1 = TRUE, player2 = FALSE, play[2]; 
+    int player1 = TRUE, player2 = FALSE, play[2], emptySpaces, emptyTab = TRUE;
+    char winner; 
     Board board = newBoard();
 
     do{
         printTable(board);
-        /** Humans always make plays on PVP an in player1's turn on PvC. */
+        /** Humans always make plays on PVP and on player1's turn on PvC. */
         if(PvP || (PvC && player1)){
             /** Decide wich symbol will be put on the board. */
             requestHumanPlay(play);
@@ -152,16 +231,27 @@ void playGame(int PvP, int PvC, int CvC){
             }
         }
         else{
-            /** Decide wether is maximizing according to the player. */
-            printf("Computador!");
-            //play = miniMax(board, player1 ? TRUE : FALSE);
+            printf("Computer is playing...\n");
+            sleep(1);
+            /** Make first computer play random, for more diverse games */
+            if (emptyTab)
+                makeRandomPlay(play);
+            else
+                findBestMove(board, player1 ? TRUE : FALSE ,play);
         }
         putOnBoard(board, player1 ? PLAYER_1 : PLAYER_2, play[0], play[1]);
+        /** After a play, the board is no longer empty. */
+        emptyTab = FALSE;
         switchPlayers(&player1, &player2);
-    }while(!isGameOver(board) && getEmptySpaces(board) != 0);
+        winner = findWinner(board);
+        emptySpaces = getEmptySpaces(board);
+    }while(winner == EMPTY && emptySpaces != 0);
+
     printTable(board);
-    /** Players swicth even after the current player wins the game. */
-    printf("Player [%c] wins!!\n", player2 ? PLAYER_1 : PLAYER_2);
+    if (winner == EMPTY && emptySpaces == 0)
+        printf("Draw...\n");
+    else
+        printf("Player [%c] wins!!\n", winner);
     destroyBoard(board);
 }
 

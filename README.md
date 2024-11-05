@@ -4,9 +4,9 @@ Implementation of the classic game (Tic-Tac-Toe) using the MiniMax algorithm to 
 ## **Content Board**
 - [Description](#description)
 - [Features](#features)
-- [Running The Project](#runningtheproject)
-- [MiniMax Algorithm](#minimaxalgorithm)
-- [Next Steps](#nextsteps)
+- [Running The Project](#running-the-project)
+- [MiniMax Algorithm](#minimax-algorithm)
+- [Next Steps](#next-steps)
 
 ## **Description**
 Tic-Tac-Toe is a board game for two players, where each of the players tries to align three symbols on a line ('X' for player one and 'O' for player two). This implementation uses the MiniMax Algorithm to make the computer only make the most optimized plays, making it a challenging opponent.

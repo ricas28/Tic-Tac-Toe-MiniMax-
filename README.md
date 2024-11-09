@@ -28,7 +28,7 @@ Tic-Tac-Toe is a board game for two players, where each of the players tries to 
 4. **Run:**
     ./main
 5. **Play:**
-    The starting menu will be presented and the user can decide what game mode to play.
+    The starting menu will be presented and the user can decide wich game mode to play.
 
 ## **MiniMax Algorithm**
 MiniMax is a search algorithm used for finding the best play for a two player game on a current game state. It explores all possible moves to make, and evaluates them until an end game condition is found. This algorithm assumes that the other player will also make the most optimal plays.
